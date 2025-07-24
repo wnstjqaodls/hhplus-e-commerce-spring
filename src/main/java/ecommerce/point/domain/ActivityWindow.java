@@ -15,4 +15,7 @@ public class ActivityWindow {
                 .mapToLong(Activity::getAmount)
                 .sum();
     }
+    public void addActivity(Activity activity) {
+        activities.add(activity);
+    }
 }
