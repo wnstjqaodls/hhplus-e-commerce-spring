@@ -19,10 +19,12 @@ class ActivityTest {
         // when
         Activity activity = new Activity(pointId, amount);
 
+
         // then
         assertThat(activity.getPointId()).isEqualTo(pointId);
         assertThat(activity.getAmount()).isEqualTo(amount);
-        assertThat(activity.getTimestamp()).isNotNull();
+        assertThat(activity.getCreatedAt()).isNotNull(); // 생성 시간은 현재 시간으로
+
     }
 
     @Test
