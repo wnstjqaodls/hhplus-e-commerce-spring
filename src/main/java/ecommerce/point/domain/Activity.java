@@ -33,4 +33,15 @@ public class Activity {
     public Long getAmount() {
         return amount;
     }
+
+    public Long getPointId() {
+        return pointId;
+    }
+    public long getActivityId() {
+        return activityId;
+    }
+    public LocalDateTime getCreatedAt() {
+        return timestamp;
+    }
+
 }
