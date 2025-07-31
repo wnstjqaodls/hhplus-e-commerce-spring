@@ -58,6 +58,7 @@ erDiagram
         
     }
     
+     
     USER {
         Bigint ID PK
         CHAR PASSWORD 
