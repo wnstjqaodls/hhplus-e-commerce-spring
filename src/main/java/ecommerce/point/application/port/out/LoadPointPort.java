@@ -1,9 +1,7 @@
 package ecommerce.point.application.port.out;
 
-import ecommerce.point.domain.ActivityWindow;
+import ecommerce.point.domain.Point;
 
 public interface LoadPointPort {
-    ActivityWindow loadActivityWindow(Long pointId);
-
-
+    Point loadPoint(Long pointId);
 }

@@ -1,44 +1,46 @@
 package ecommerce.point.domain;
 
+import java.util.ArrayList;
+
 public class Point {
     private static final long CHARGE_LIMIT = 1_000_000L;
     
     private final Long id;
 
+    private ActivityWindow activityWindow;
+
     public Point(Long id) {
         this.id = id;
+        this.activityWindow = new ActivityWindow(new ArrayList<>());
     }
 
-    /**
-     * 포인트 충전 - 새로운 Activity를 생성하여 반환
-     * 실제 저장은 애플리케이션 서비스에서 담당
-     */
-    public Activity charge(ActivityWindow activityWindow, long amount) {
+    public Point(Long id, ActivityWindow activityWindow) {
+        this.id = id;
+        this.activityWindow = activityWindow;
+    }
+
+    public void charge(long amount) {
         validateChargeAmount(amount);
-        // 새로운 충전 Activity 생성 (아직 저장되지 않은 상태)
-        return new Activity(this.id, amount);
+        Activity newActivity = new Activity(this.id, amount);
+        this.activityWindow.addActivity(newActivity);
     }
 
-    /**
-     * 포인트 사용 - 새로운 Activity를 생성하여 반환  
-     * 실제 저장은 애플리케이션 서비스에서 담당
-     */
-    public Activity use(ActivityWindow activityWindow, long amount) {
-        long currentBalance = activityWindow.calculateBalance();
+    public void use(long amount) {
+        long currentBalance = calculateBalance();
         validateUseAmount(currentBalance, amount);
-        // 새로운 사용 Activity 생성 (아직 저장되지 않은 상태)
-        return new Activity(this.id, -amount);
+        Activity newActivity = new Activity(this.id, -amount);
+        this.activityWindow.addActivity(newActivity);
     }
 
     private void validateChargeAmount(long amount) {
         if (amount > CHARGE_LIMIT) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("충전 한도를 초과했습니다.");
         }
     }
 
     private void validateUseAmount(long currentBalance, long amount) {
         if (currentBalance < amount) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("잔액이 부족합니다.");
         }
     }
 
@@ -46,8 +48,11 @@ public class Point {
         return id;
     }
 
-    // 잔액을 알고싶으면 ActivityWindow를 파라미터로 받아야함
-    public long getBalance(ActivityWindow activityWindow) {
-        return activityWindow.calculateBalance(); // 항상 계산해서 구함
+    public long calculateBalance() {
+        return activityWindow.calculateBalance();
+    }
+
+    public ActivityWindow getActivityWindow() {
+        return activityWindow;
     }
 }

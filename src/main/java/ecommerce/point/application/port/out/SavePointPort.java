@@ -1,7 +1,7 @@
 package ecommerce.point.application.port.out;
 
-import ecommerce.point.domain.Activity;
+import ecommerce.point.domain.Point;
 
 public interface SavePointPort {
-    Activity saveActivity(Activity activity);
+    Point savePoint(Point point);
 }
