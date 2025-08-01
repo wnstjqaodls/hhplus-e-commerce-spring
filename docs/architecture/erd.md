@@ -11,13 +11,8 @@ erDiagram
     
     PRODUCT {
         Bigint ID PK
-        VARCHAR TITLE
         VARCHAR PRODUCT_NAME
-        VARCHAR ATTRS_NAME
-        CHAR CCY
         BIGDECIMAL AMOUT
-        VARCHAR IMAGE_URL
-        BOOLEAN SOLDOUT 
     }
     %% TODO : 금액의 정밀도를 얼마나 가져갈것인지? > 정책에서 결정 (10,4) 정도
     
@@ -28,27 +23,27 @@ erDiagram
     }
     %% 수량은 음수가 없기에 0 ~ 4294967295 까지 표현가능 (4바이트)
     
-    PRODUCT_CATEGORY {
-        Bigint ID PK
-        Bigint PRODUCT_ID
-        VARCHAR CHILDREN
-        VARCHAR PARENT
-    }
-    
+    // payment 까지 한번에 비정규화
+    // Order 에서 인기상품테이블이 별개로 필요할때 > 만들기
     ORDER {
         Bigint ID PK
         Bigint PRODUCT_ID
         Bigint COUPON_ID
         Bigint USER_ID
-        CHAR CCY 
         BIGDECIMAL AMOUNT
+        CHAR ORDER_STATUS
+        
+        TIMESTAMP ORDER_TIME
+        -- 싹다 지워버렷 --
+        
+        
+        CHAR CCY 
         CHAR PAYMENT_TYPE
+        
         VARCHAR PAYMENT_REF
         VARCHAR SHIP_ADDRESS
         DATE SHIP_DONE_DATE
-        CHAR ORDER_STATUS
         VARCHAR GUID
-        TIMESTAMP ORDER_TIME
         DATETIME ORDER_DATETIME
         
     }
@@ -62,39 +57,29 @@ erDiagram
     USER {
         Bigint ID PK
         CHAR PASSWORD 
-        String USER_NAME
-        int EMAIL
-        VARCHAR PHONE_NUMBER
-        VARCHAR ADDRESS 
-        CHAR SOCIAL_NUMBER
-        CHAR USER_TYPE
-        VARCHAR IP_ADDRESS
-        CHAR NATION
-        DATE LAST_PASSWORD_CHAGE_DATE
     }
+    
     
     USERS_POINT {
       Bigint ID PK
       Bigint USER_ID
       BIGDECIMAL AMOUNT
-      BIGDECIMAL BALANCE
     }
 
+    // 생각좀 더해보기
     COUPON {
       Bigint ID PK
-      VARCHAR COUPON_NAME
-      CHAR COUPON_TYPE
       INT TOTAL_COUPON_QUANTITY
-      INT ISSUED_COUPON_QUANTITY
-      DATETIME ISSUED_AT
-      DATETIME EXPIRES_AT
     }
+    
   %% 쿠폰타입은 (선착순/다운로드/자동지급등등.. 추후확장성고려)
 
     USER_COUPON {
       Bigint ID PK
       Bigint USER_ID
       Bigint COUPON_ID
+      DATETIME ISSUED_AT
+      DATETIME EXPIRES_AT
       BOOLEAN USED
       CHAR STATUS
     }
@@ -104,17 +89,6 @@ erDiagram
 %% TODO : 국가별 주소 길이가 다를 수 있으므로 넉넉히 정의
 %% XXX : 한국의 주민번호와, 미국의 사회보장번호와같이 다른경우 컬럼을 새로 만들어서 관리..?
     %% 이력 테이블은 애플리캐이션에서 별개의 트랜잭션으로 관리되어야함.
-    ORDER_HISTORY {
-      Bigint ID
-      Bigint ORDER_ID
-      Bigint PRODUCT_ID
-      Bigint USER_ID
-      CHAR LAST_ORDER_STATUS
-      TIMESTAMP ORDER_TIME
-      DATETIME ORDER_DATETIME
-    }
-
-
 
 ```
 
