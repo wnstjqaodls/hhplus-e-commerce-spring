@@ -39,6 +39,9 @@ dependencies {
     // DB
 	runtimeOnly("com.mysql:mysql-connector-j")
 
+	// DevTools 추가 (개발 환경에서만 사용)
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
+
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
