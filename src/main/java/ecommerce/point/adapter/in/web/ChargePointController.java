@@ -28,10 +28,9 @@ public class ChargePointController {
             long newBalance = chargePointUseCase.charge(requestDto.getUserId(), requestDto.getAmount());
 
             PointReponseDto responseDto = new PointReponseDto(
-                requestDto.getUserId(),
                 newBalance,
-                java.time.LocalDateTime.now().toString(),
-                "포인트 충전 성공"
+                requestDto.getUserId(),
+                java.time.LocalDateTime.now().toString()
             );
 
             log.info("포인트 충전 성공: userId={}, newBalance={}", requestDto.getUserId(), newBalance);
