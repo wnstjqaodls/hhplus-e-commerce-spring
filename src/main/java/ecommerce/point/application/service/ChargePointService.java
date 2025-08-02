@@ -22,13 +22,13 @@ public class ChargePointService implements ChargePointUseCase {
     }
 
     @Override
-    public long charge(Long pointId, long amount) {
-        log.info("ChargePointService.charge() 호출됨. pointId: {}, amount: {}", pointId, amount);
+    public long charge(Long userId, long amount) {
+        log.info("ChargePointService.charge() 호출됨. pointId: {}, amount: {}", userId, amount);
 
-        Point point = loadPointPort.loadPoint(pointId);
+        Point point = loadPointPort.loadPoint(userId);
         if (point == null) {
-            log.info("새로운 Point 생성. pointId: {}", pointId);
-            point = new Point(pointId);
+            log.info("새로운 Point 생성. pointId: {}", userId);
+            point = new Point(userId);
         } else {
             log.info("기존 Point 로드됨. pointId: {}, 현재 잔액: {}", point.getId(), point.calculateBalance());
         }
