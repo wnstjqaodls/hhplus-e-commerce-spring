@@ -12,7 +12,7 @@ erDiagram
     PRODUCT {
         Bigint ID PK
         VARCHAR PRODUCT_NAME
-        BIGDECIMAL AMOUT
+        BIGDECIMAL AMOUNT
     }
     %% TODO : 금액의 정밀도를 얼마나 가져갈것인지? > 정책에서 결정 (10,4) 정도
     
@@ -23,8 +23,6 @@ erDiagram
     }
     %% 수량은 음수가 없기에 0 ~ 4294967295 까지 표현가능 (4바이트)
     
-    // payment 까지 한번에 비정규화
-    // Order 에서 인기상품테이블이 별개로 필요할때 > 만들기
     ORDER {
         Bigint ID PK
         Bigint PRODUCT_ID
@@ -34,46 +32,33 @@ erDiagram
         CHAR ORDER_STATUS
         
         TIMESTAMP ORDER_TIME
-        -- 싹다 지워버렷 --
-        
-        
-        CHAR CCY 
-        CHAR PAYMENT_TYPE
-        
-        VARCHAR PAYMENT_REF
-        VARCHAR SHIP_ADDRESS
-        DATE SHIP_DONE_DATE
-        VARCHAR GUID
-        DATETIME ORDER_DATETIME
-        
     }
-    %% GUID 는 다중애플리케이션에서 각 요청을 구분하는 시스템에서 사용되는 식별자임.
-    %% AMOUNT 필드를 추가한 이유 : 주문시점의 가격과, 이후 상품가격이 변동될수있기에
+  
     ORDER_ITEMS{
-        
+        Bigint ID PK
+        Bigint ORDER_ID
+        Bigint PRODUCT_ID
+        INT QUANTITY
     }
     
-     
     USER {
         Bigint ID PK
         CHAR PASSWORD 
     }
     
-    
     USERS_POINT {
       Bigint ID PK
       Bigint USER_ID
       BIGDECIMAL AMOUNT
+      DATETIME LAST_CHARGE_AT
+      CHAR STATUS
     }
 
-    // 생각좀 더해보기
     COUPON {
       Bigint ID PK
       INT TOTAL_COUPON_QUANTITY
     }
     
-  %% 쿠폰타입은 (선착순/다운로드/자동지급등등.. 추후확장성고려)
-
     USER_COUPON {
       Bigint ID PK
       Bigint USER_ID
@@ -84,12 +69,6 @@ erDiagram
       CHAR STATUS
     }
     
-    
-%% TODO : 추후 해싱된 암호화값을위해 CHAR(30) 으로 선언해야함.
-%% TODO : 국가별 주소 길이가 다를 수 있으므로 넉넉히 정의
-%% XXX : 한국의 주민번호와, 미국의 사회보장번호와같이 다른경우 컬럼을 새로 만들어서 관리..?
-    %% 이력 테이블은 애플리캐이션에서 별개의 트랜잭션으로 관리되어야함.
-
 ```
 
 ### 고찰및 느낀점
@@ -106,8 +85,6 @@ erDiagram
 - 초기 설계와 이후 설계문서를 여러개의 파일로 관리하면 초기설계에서부터 어떻게 진화하고 달라진부분은 무엇인지 파악할수있지않을까
 - 테이블의 데이터 길이는 용량을 많이 잡아먹더라도, 넉넉하게 정의하는게 좋지않을까? 영속성 타입이 이후에 변경되면 애플리케이션의 코드를 많이고쳐야 될것같고, 수정포인트가 많아질것으로 예상되는데..
 
-
-
 ### 질문
 - 각 도메인별 pk 의 컬럼명이 id 의 작명이 id 라는그 자체로 괜찮은지? 각 엔티티별 User_id 이런식으로 될 필요는없는지..?
 - 그렇다면 이때 pk 가 
@@ -119,3 +96,14 @@ erDiagram
 작성일 : 2025-07-16 <br>
 작성자 : 김준섭(5팀)
 문서유형 : 설계서
+
+## 문서 수정 이력
+수정일 : 2025-08-03 <br>
+수정자 : 김준섭(5팀) <br>
+수정내용 : 포인트 테이블 삭제, 모든테이블 필드 간소화작업 
+수정이유 : 초기 설계에서 너무 지차니게 많은것들을 정의하려고 했고, 
+그로인해 구현에 대한 부담이 커져서 가장 핵심적인 필드들만 남기고 나머지는 삭제함.
+
+
+
+
