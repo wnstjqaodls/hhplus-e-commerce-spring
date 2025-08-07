@@ -3,14 +3,19 @@ package ecommerce.point.adapter.in.web;
 public class PointReponseDto {
     private long pointId;
     private long amount;
+    private long userId;
     private String dateTime;
-    private String message;
 
     public PointReponseDto(long pointId, long amount, String dateTime, String message) {
         this.pointId = pointId;
         this.amount = amount;
         this.dateTime = dateTime;
-        this.message = message;
+    }
+
+    public PointReponseDto (long amount, long userId, String dateTime) {
+        this.amount = amount;
+        this.userId = userId;
+        this.dateTime = dateTime;
     }
 
     public PointReponseDto() {
@@ -41,11 +46,11 @@ public class PointReponseDto {
         this.dateTime = dateTime;
     }
 
-    public String getMessage() {
-        return message;
+    public long getUserId () {
+        return userId;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setUserId (long userId) {
+        this.userId = userId;
     }
 }

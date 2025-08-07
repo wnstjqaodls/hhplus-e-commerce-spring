@@ -39,6 +39,16 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
     database-platform: org.hibernate.dialect.MySQLDialect
+  devtools:
+    restart:
+      enabled: true                    # 재시작 활성화
+      additional-paths: src/main/java  # 감시할 경로
+      exclude: static/**,public/**     # 제외할 경로
+    livereload:
+      enabled: true                    # 브라우저 자동 새로고침
+      port: 35729
+    remote:
+      secret: mysecret                 # 원격 DevTools용 (선택사항)
 
 server:
   port: 8080

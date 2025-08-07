@@ -1,35 +1,46 @@
 package ecommerce.point.domain;
 
-import java.util.ArrayList;
-
 public class Point {
     private static final long CHARGE_LIMIT = 1_000_000L;
-    
+
+    public long getAmount () {
+        return amount;
+    }
+
+    public void setAmount (long amount) {
+        this.amount = amount;
+    }
+
+    public Point () {
+        this.id = null; // 초기화 시 ID는 null로 설정
+        this.amount = 0; // 초기 잔액은 0으로 설정
+    }
+
     private final Long id;
 
-    private ActivityWindow activityWindow;
+    private long amount;
 
     public Point(Long id) {
         this.id = id;
-        this.activityWindow = new ActivityWindow(new ArrayList<>());
     }
-
-    public Point(Long id, ActivityWindow activityWindow) {
+    public Point(Long id, long amount) {
         this.id = id;
-        this.activityWindow = activityWindow;
+        this.amount = amount;
     }
 
     public void charge(long amount) {
         validateChargeAmount(amount);
-        Activity newActivity = new Activity(this.id, amount);
-        this.activityWindow.addActivity(newActivity);
+        this.amount += amount;
+
     }
 
-    public void use(long amount) {
+    public void use(long amount, Long useAmount) {
         long currentBalance = calculateBalance();
         validateUseAmount(currentBalance, amount);
-        Activity newActivity = new Activity(this.id, -amount);
-        this.activityWindow.addActivity(newActivity);
+    }
+
+    public long calculateBalance () {
+        return getAmount();
     }
 
     private void validateChargeAmount(long amount) {
@@ -48,11 +59,4 @@ public class Point {
         return id;
     }
 
-    public long calculateBalance() {
-        return activityWindow.calculateBalance();
-    }
-
-    public ActivityWindow getActivityWindow() {
-        return activityWindow;
-    }
 }

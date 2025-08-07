@@ -1,4 +1,4 @@
-package ecommerce.point.application.port.out;
+package ecommerce.order.application.port.out;
 
 import ecommerce.point.domain.Point;
 
