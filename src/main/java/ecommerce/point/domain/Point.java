@@ -34,7 +34,7 @@ public class Point {
 
     }
 
-    public void use(long amount) {
+    public void use(long amount, Long useAmount) {
         long currentBalance = calculateBalance();
         validateUseAmount(currentBalance, amount);
     }

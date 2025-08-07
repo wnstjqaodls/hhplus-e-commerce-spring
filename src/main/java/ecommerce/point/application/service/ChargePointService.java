@@ -4,6 +4,7 @@ import ecommerce.point.application.port.in.ChargePointUseCase;
 import ecommerce.point.application.port.out.LoadPointPort;
 import ecommerce.point.application.port.out.SavePointPort;
 import ecommerce.point.domain.Point;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ public class ChargePointService implements ChargePointUseCase {
         this.savePointPort = savePointPort;
     }
 
+    @Transactional
     @Override
     public long charge(Long userId, long amount) {
         log.info("ChargePointService.charge() 호출됨. pointId: {}, amount: {}", userId, amount);

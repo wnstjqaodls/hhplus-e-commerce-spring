@@ -1,42 +1,64 @@
 package ecommerce.point.adapter.in.web;
 
 import ecommerce.point.application.port.in.ChargePointUseCase;
+import ecommerce.point.application.port.out.LoadPointPort;
+import ecommerce.point.application.port.out.SavePointPort;
+import ecommerce.point.application.service.ChargePointService;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.context.request.RequestAttributes;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.MediaType;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.assertj.core.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+@WebMvcTest(ChargePointController.class)
+public class ChargePointControllerTest {
 
-@ExtendWith(SpringExtension.class)
-class ChargePointControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
 
+    @Mock
+    private LoadPointPort loadPointPort;
+
+    @Mock
+    private SavePointPort savePointPort;
+
+    @MockitoBean
     private ChargePointUseCase chargePointUseCase;
-    private RequestAttributes requestAttributes;
 
     @Test
-    @DisplayName("만료된_사용자의_요청_대해_포인트충전_요청에_실패한다")
-    public void theExpired_Request_pointCharging_(){
+    @DisplayName("충전 한도초과금액에_대해_포인트충전_요청에_실패한다")
+    public void exceed_maxLimitAmount_pointCharging_() throws Exception {
         // given
-        chargePointUseCase = new ChargePointUseCase();
+        ChargePointUseCase chargePointUseCase = new ChargePointService(loadPointPort,savePointPort);
+
         Long userId = 1L;
         Long points = 1000L;
+        String requestBody = String.format("""
+            { 
+               "userId" : %d,
+               "amount" : %d
+                }
+            """, userId, points);
 
         //when
-        // 만료된 사용자의 요청 검증 메서드
-        // 예시로, 만료된 사용자의 요청을 검증하는 로직을 추가합니다.
-        boolean isExpired = requestAttributes.getSessionId() ; // 예시로 만료된 사용자로 설정
-        if (isExpired) {
-            throw new IllegalArgumentException("만료된 사용자의 요청입니다.");
-        }
+        mockMvc.perform(post("/points/charge")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+            .andExpect(status().isBadRequest())  // 400 상태 코드
+            .andExpect(jsonPath("$.success").value(false));
 
 
-        chargePointUseCase.charge(userId, points);
-
-        //then
-
-
+        assertThatThrownBy(()-> {
+            chargePointUseCase.charge(userId, points);
+        })
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("충전 한도를 초과했습니다.");
 
 
     }
