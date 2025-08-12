@@ -2,11 +2,11 @@ package ecommerce.order.domain;
 
 public class Order {
 
-    private Long id;
-    private String customerName;
-    private String product;
-    private int quantity;
-    private Long price;
+    private final Long id;
+    private final String customerName;
+    private final String product;
+    private final int quantity;
+    private final Long price;
 
     public Order (Long id, String customerName, String product, int quantity, Long price) {
         this.id = id;
@@ -32,7 +32,7 @@ public class Order {
         return quantity;
     }
 
-    public double getPrice () {
+    public Long getPrice () {
         return price;
     }
 
