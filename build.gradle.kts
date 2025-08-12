@@ -36,6 +36,14 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
+	// Redis & Redisson
+	implementation("org.redisson:redisson-spring-boot-starter:3.24.3") // 이 줄 추가
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+    // Lombok
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
+
     // DB
 	runtimeOnly("com.mysql:mysql-connector-j")
 
@@ -43,11 +51,17 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // Test
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	
+	// 테스트에서도 Lombok 사용
+	testCompileOnly("org.projectlombok:lombok")
+	testAnnotationProcessor("org.projectlombok:lombok")
 }
 
 tasks.withType<Test> {
