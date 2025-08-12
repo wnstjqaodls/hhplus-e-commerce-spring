@@ -1,5 +1,6 @@
 package ecommerce.order.adapter.out.persistence;
 
+import ecommerce.order.application.port.out.LoadOrderPort;
 import ecommerce.order.application.port.out.LoadPointPort;
 import ecommerce.order.application.port.out.SaveOrderPort;
 import ecommerce.order.domain.Order;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Component
-public class OrderPersistenceAdapter implements LoadPointPort, SaveOrderPort {
+public class OrderPersistenceAdapter implements LoadPointPort, SaveOrderPort, LoadOrderPort {
 
     private final OrderRepository orderRepository;
     private final PointRepository pointRepository;
@@ -64,6 +65,22 @@ public class OrderPersistenceAdapter implements LoadPointPort, SaveOrderPort {
             "Product Name",  // Point 패턴과 동일한 임시값
             savedOrderJpaEntity.getQuantity(),
             savedOrderJpaEntity.getAmount()
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Order loadOrder(Long orderId) {
+        OrderJpaEntity orderJpaEntity = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다. orderId: " + orderId));
+
+        // JPA Entity → Order 도메인 매핑
+        return new Order(
+            orderJpaEntity.getId(),
+            "Customer Name", // 실제로는 User 테이블에서 조회해야 함
+            "Product Name",  // 실제로는 Product 테이블에서 조회해야 함
+            orderJpaEntity.getQuantity(),
+            orderJpaEntity.getAmount()
         );
     }
 }

@@ -1,12 +1,12 @@
 package ecommerce.order.adapter.in.web;
 
-import ecommerce.order.application.port.in.PlaceOrderUseCase;
 import ecommerce.common.dto.ApiResponse;
+import ecommerce.order.application.port.in.PlaceOrderUseCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/orders")
@@ -33,11 +33,13 @@ public class PlaceOrderController {
                 requestDto.getAmount()
             );
 
-            OrderResponseDto responseDto = new OrderResponseDto(
-                orderId,
-                requestDto.getUserId(),
-                java.time.LocalDateTime.now().toString()
-            );
+            OrderResponseDto responseDto = new OrderResponseDto().builder()
+                .orderId(orderId)
+                .userId(requestDto.getUserId())
+                .product(requestDto.getProductId())
+                .quantity(requestDto.getQuantity())
+                .price(requestDto.getAmount())
+                .build();
 
             log.info("주문 생성 성공: userId={}, orderId={}", requestDto.getUserId(), orderId);
             return ResponseEntity.ok(ApiResponse.success(responseDto));
@@ -50,4 +52,7 @@ public class PlaceOrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error("서버 오류 발생"));
         }
     }
+
 }
+
+
