@@ -44,6 +44,7 @@ erDiagram
     PAYMENT {
         Bigint ID PK
         Bigint ORDER_ID
+        Bigint PG_ID
         BIGDECIMAL AMOUNT
         VARCHAR STATUS
         TIMESTAMP PAYMENT_TIME
