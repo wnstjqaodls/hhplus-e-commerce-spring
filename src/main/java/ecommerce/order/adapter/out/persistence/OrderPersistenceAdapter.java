@@ -61,11 +61,10 @@ public class OrderPersistenceAdapter implements LoadPointPort, SaveOrderPort, Lo
         // JPA Entity → Order 도메인 매핑 (Point 패턴과 동일)
         return new Order(
             savedOrderJpaEntity.getId(),
-            "Customer Name", // Point 패턴과 동일한 임시값
-            "Product Name",  // Point 패턴과 동일한 임시값
+            savedOrderJpaEntity.getUserId(),
+            savedOrderJpaEntity.getProductId(),
             savedOrderJpaEntity.getQuantity(),
-            savedOrderJpaEntity.getAmount()
-        );
+            savedOrderJpaEntity.getAmount());
     }
 
     @Override
@@ -77,10 +76,9 @@ public class OrderPersistenceAdapter implements LoadPointPort, SaveOrderPort, Lo
         // JPA Entity → Order 도메인 매핑
         return new Order(
             orderJpaEntity.getId(),
-            "Customer Name", // 실제로는 User 테이블에서 조회해야 함
-            "Product Name",  // 실제로는 Product 테이블에서 조회해야 함
+            orderJpaEntity.getUserId(),
+            orderJpaEntity.getProductId(),
             orderJpaEntity.getQuantity(),
-            orderJpaEntity.getAmount()
-        );
+            orderJpaEntity.getAmount());
     }
 }
