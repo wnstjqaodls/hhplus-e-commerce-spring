@@ -61,6 +61,8 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("com.redis.testcontainers:testcontainers-redis:1.6.4")
+
 	
 	// 테스트에서도 Lombok 사용
 	testCompileOnly("org.projectlombok:lombok")
