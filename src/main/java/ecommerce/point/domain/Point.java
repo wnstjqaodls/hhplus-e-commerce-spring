@@ -35,9 +35,20 @@ public class Point {
 
     }
 
-    public void use (long amount, Long useAmount) {
+    public void use(long useAmount) {
+        // 파라미터 검증
+        if (useAmount <= 0) {
+            throw new IllegalArgumentException("사용할 포인트는 0보다 커야 합니다.");
+        }
+        
+        // 현재객체에서 잔액 가져오기.
         long currentBalance = calculateBalance();
-        validateUseAmount(currentBalance, amount);
+
+        // 잔액 충분성 검증
+        validateUseAmount(currentBalance, useAmount);
+
+        // 실제 포인트 차감 (이 부분이 중요!)
+        this.amount -= useAmount;
     }
 
     public long calculateBalance () {

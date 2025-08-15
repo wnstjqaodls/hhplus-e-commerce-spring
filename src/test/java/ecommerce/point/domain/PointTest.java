@@ -60,7 +60,7 @@ public class PointTest {
 
         // then
         assertThrows(IllegalArgumentException.class, () -> {
-            point.use(userId, useAmount);
+            point.use(useAmount);
         }, "사용 금액이 잔액보다 많습니다.");
 
     }
