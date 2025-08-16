@@ -35,7 +35,7 @@ public class GetOrderHistoryController {
 
             OrderResponseDto response = OrderResponseDto.builder()
                 .orderId(order.getId())
-                .customerName(order.getCustomerName())
+                .customerName("User" + order.getUserId())
                 // productId, userId, orderTime은 현재 도메인에 없으므로 null 유지
                 .quantity(order.getQuantity())
                 .price(order.getPrice())

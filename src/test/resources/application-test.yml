@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active: test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  cache:
+    type: redis
+
+# 로그 설정 - 캐시 동작 확인용
+logging:
+  level:
+    ecommerce: INFO
+    org.springframework.cache: DEBUG
+    org.testcontainers: WARN

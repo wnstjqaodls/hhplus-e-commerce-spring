@@ -1,5 +1,6 @@
 package ecommerce.point.application.service;
 
+import ecommerce.config.DistributedLock;
 import ecommerce.point.application.port.in.ChargePointUseCase;
 import ecommerce.point.application.port.out.LoadPointPort;
 import ecommerce.point.application.port.out.SavePointPort;
@@ -24,16 +25,17 @@ public class ChargePointService implements ChargePointUseCase {
 
     @Transactional
     @Override
+    @DistributedLock(key = "'user:point:' + #userId", waitTime = 5, leaseTime = 3)
     public long charge(Long userId, long amount) {
-        log.info("ChargePointService.charge() 호출됨. pointId: {}, amount: {}", userId, amount);
+        log.info("ChargePointService.charge() 호출됨 - 분산락 적용. userId: {}, amount: {}", userId, amount);
 
         Point point = new Point(); // 초기 잔액은 0으로 설정 , id 는 자동채번
-        log.info("Point 도메인 객체의 charge() 메서드 호출 전");
+        log.info("Point 도메인 객체의 charge() 메서드 호출 전 - 분산락 내에서 실행");
         point.charge(amount);
         log.info("Point 도메인 객체의 charge() 메서드 호출 후. 새 잔액 (예상): {}", point.calculateBalance());
 
         Point savedPoint = savePointPort.savePoint(point, userId);
-        log.info("Point 애그리거트 저장 완료. 저장된 Point ID: {}, 충전 금액: {}", savedPoint.getId(), savedPoint.calculateBalance());
+        log.info("Point 애그리거트 저장 완료 - 분산락으로 동시성 제어됨. 저장된 Point ID: {}, 충전 금액: {}", savedPoint.getId(), savedPoint.calculateBalance());
 
         return savedPoint.calculateBalance();
     }

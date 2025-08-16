@@ -3,15 +3,15 @@ package ecommerce.order.domain;
 public class Order {
 
     private final Long id;
-    private final String customerName;
-    private final String product;
+    private final Long userId;
+    private final Long productId;
     private final int quantity;
     private final Long price;
 
-    public Order (Long id, String customerName, String product, int quantity, Long price) {
+    public Order (Long id, Long userId, Long productId, int quantity, Long price) {
         this.id = id;
-        this.customerName = customerName;
-        this.product = product;
+        this.userId = userId;
+        this.productId = productId;
         this.quantity = quantity;
         this.price = price;
     }
@@ -20,13 +20,7 @@ public class Order {
         return id;
     }
 
-    public String getCustomerName () {
-        return customerName;
-    }
-
-    public String getProduct () {
-        return product;
-    }
+    public Long getUserId () { return userId; }
 
     public int getQuantity () {
         return quantity;
@@ -46,11 +40,10 @@ public class Order {
 
         return new Order(
             null, // ID는 자동 생성
-            "Customer Name", // 고객 이름은 실제로는 DB에서 조회해야 함
-            "Product Name", // 상품 이름은 실제로는 DB에서 조회해야 함
+            userId, // 고객 이름은 실제로는 DB에서 조회해야 함
+            productId,// 상품 이름은 실제로는 DB에서 조회해야 함
             quantity,
-            amount
-        );
+            amount);
     }
 
     public static Order cancelOrder (Long orderId) {
@@ -58,7 +51,7 @@ public class Order {
             throw new IllegalArgumentException("주문 ID가 유효하지 않습니다.");
         }
         // 주문 취소 로직 구현
-        return new Order(orderId, "Customer Name", "Product Name", 0, 0L);
+        return new Order(orderId, 0L, 0L, 0, 0L);
     }
 
     public static Order updateOrder (Long orderId, Long productId, int quantity, Long amount) {
@@ -66,7 +59,7 @@ public class Order {
             throw new IllegalArgumentException("유효하지 않은 주문 정보입니다.");
         }
         // 주문 업데이트 로직 구현
-        return new Order(orderId, "Customer Name", "Product Name", quantity, amount);
+        return new Order(orderId, 0L, 0L, 0, 0L);
     }
 
     private static void validateOrder (Long userId, Long productId, int quantity, Long amount) {
@@ -76,5 +69,7 @@ public class Order {
     }
 
 
-
+    public Long getProductId () {
+        return productId;
+    }
 }

@@ -41,6 +41,15 @@ erDiagram
         INT QUANTITY
     }
     
+    PAYMENT {
+        Bigint ID PK
+        Bigint ORDER_ID
+        Bigint PG_ID
+        BIGDECIMAL AMOUNT
+        VARCHAR STATUS
+        TIMESTAMP PAYMENT_TIME
+    }
+    
     USER {
         Bigint ID PK
         CHAR PASSWORD 

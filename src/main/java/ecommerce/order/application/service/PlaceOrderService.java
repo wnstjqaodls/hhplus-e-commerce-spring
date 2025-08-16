@@ -34,7 +34,7 @@ public class PlaceOrderService implements PlaceOrderUseCase {
         Point userPoint = loadPointPort.loadPoint(userId);
         log.info("사용자 포인트 조회 완료. 현재 포인트: {}원", userPoint.getAmount());
 
-        // 2. 포인트 충분성 검증
+        // 2. 포인트 충분성 검증 (차감은 PayOrderService에서 처리)
         log.info("포인트 충분성 검증 시작. 필요: {}원, 보유: {}원", amount, userPoint.getAmount());
         if (userPoint.getAmount() < amount) {
             log.error("포인트 부족. 필요: {}원, 보유: {}원", amount, userPoint.getAmount());

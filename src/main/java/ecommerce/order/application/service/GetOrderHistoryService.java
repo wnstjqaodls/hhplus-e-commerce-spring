@@ -30,8 +30,8 @@ public class GetOrderHistoryService implements GetOrderHistoryUseCase {
         
         try {
             Order order = loadOrderPort.loadOrder(orderId);
-            log.info("주문 조회 성공 - orderId: {}, customerName: {}, quantity: {}", 
-                    orderId, order.getCustomerName(), order.getQuantity());
+            log.info("주문 조회 성공 - orderId: {}, userId: {}, quantity: {}", 
+                    orderId, order.getUserId(), order.getQuantity());
             return order;
         } catch (Exception e) {
             log.error("주문 조회 중 오류 발생 - orderId: {}, error: {}", orderId, e.getMessage());
