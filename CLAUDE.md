@@ -257,3 +257,4 @@ docker-compose logs redis
 4. **PR Process**: Follow checklist in `pull_request_template.md`
 
 This codebase demonstrates advanced Spring Boot patterns with clean architecture, distributed systems concepts, and comprehensive testing strategies.
+- 앞으로 코드 포맷은 기존의 코드베이스와 비슷하게 작성
