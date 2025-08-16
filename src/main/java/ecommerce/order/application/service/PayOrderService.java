@@ -1,5 +1,6 @@
 package ecommerce.order.application.service;
 
+import ecommerce.config.DistributedLock;
 import ecommerce.order.application.port.in.PayOrderUseCase;
 import ecommerce.order.application.port.out.LoadOrderPort;
 import ecommerce.order.application.port.out.SaveOrderPort;
@@ -40,21 +41,22 @@ public class PayOrderService implements PayOrderUseCase {
 
     @Override
     @Transactional
+    @DistributedLock(key = "'user:payment:' + #userId", waitTime = 5, leaseTime = 3)
     public Long payOrder(Long userId, Long orderId) {
-        log.info("PayOrderService.payOrder() 호출됨. userId: {}, orderId: {}", userId, orderId);
+        log.info("PayOrderService.payOrder() 호출됨 - 분산락 적용. userId: {}, orderId: {}", userId, orderId);
         
         // 1. 주문 정보 조회
-        log.info("주문 정보 조회 시작. orderId: {}", orderId);
+        log.info("주문 정보 조회 시작 - 분산락 내에서 실행. orderId: {}", orderId);
         Order order = loadOrderPort.loadOrder(orderId);
         log.info("주문 정보 조회 완료. 주문 금액: {}원", order.getPrice());
         
         // 2. 현재 포인트 조회
-        log.info("사용자 포인트 조회 시작. userId: {}", userId);
+        log.info("사용자 포인트 조회 시작 - 동시성 제어됨. userId: {}", userId);
         Point userPoint = loadPointPort.loadPoint(userId);
         log.info("사용자 포인트 조회 완료. 현재 포인트: {}원", userPoint.getAmount());
         
         // 3. 포인트 차감 (현재 use 메서드 시그니처에 맞게 호출)
-        log.info("포인트 차감 시작. 차감할 금액: {}원", order.getPrice());
+        log.info("포인트 차감 시작 - 분산락으로 동시 차감 방지. 차감할 금액: {}원", order.getPrice());
         userPoint.use(order.getPrice());
         log.info("포인트 차감 완료. 남은 포인트: {}원", userPoint.getAmount());
         
@@ -67,7 +69,7 @@ public class PayOrderService implements PayOrderUseCase {
         log.info("결제 정보 생성 시작");
         Payment payment = Payment.createPayment(orderId, order.getPrice());
         Payment savedPayment = savePayPort.savePayment(payment, userId);
-        log.info("결제 정보 저장 완료. Payment ID: {}", savedPayment.getId());
+        log.info("결제 정보 저장 완료 - 분산락으로 중복 결제 방지됨. Payment ID: {}", savedPayment.getId());
         
         return savedPayment.getId();
     }
