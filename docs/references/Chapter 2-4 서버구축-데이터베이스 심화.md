@@ -251,7 +251,7 @@ public class EmptyDatabaseIntegrationTest {
 
 서비스에 대해서 크게 2가지 특징을 가집니다.
 
-![image.png](image.png)
+![image.png](chap3-2_trafic/image.png)
 
 서비스는 클라이언트에게 서비스를 제공해주는 오브젝트나 모듈
 
@@ -587,7 +587,7 @@ Tx1 이 (x → x’) 로 변경하고 Tx2 가 x’ 로 읽은 상황. 이 때, T
 
 < 각 격리 수준별 문제가 발생하는 케이스 >
 
-![Untitled](Untitled.png)
+![Untitled](chap3-2_trafic/Untitled.png)
 
 </aside>
 
