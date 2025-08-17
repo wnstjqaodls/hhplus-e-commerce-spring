@@ -1,9 +1,11 @@
 package ecommerce.product.application.service;
 
+import ecommerce.config.DistributedLock;
 import ecommerce.product.application.port.in.ReduceStockUseCase;
 import ecommerce.product.application.port.out.LoadProductPort;
 import ecommerce.product.application.port.out.SaveProductPort;
 import ecommerce.product.domain.Product;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,10 @@ public class ReduceStockService implements ReduceStockUseCase {
     }
 
     @Override
+    @Transactional
+    @DistributedLock(key = "'product:stock:' + #productId", waitTime = 5000L, leaseTime = 3000L)
     public void reduceStock(Long productId, int quantity) {
+        log.info("ReduceStockService.reduceStock() 호출됨. productId: {}, quantity: {}", productId, quantity);
         log.info("재고 차감 시작 - productId: {}, quantity: {}", productId, quantity);
         Product product = loadProductPort.loadProduct(productId);
         product.reduceStock(quantity);
