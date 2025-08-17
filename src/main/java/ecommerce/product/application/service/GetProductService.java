@@ -29,9 +29,9 @@ public class GetProductService implements GetProductUseCase {
     @Override
     @Cacheable(value = CacheNames.PRODUCT, key = "#productId")
     public Product getProduct(Long productId) {
-        log.info("🔍 상품 단건 조회 시작 (DB 조회) - productId: {}", productId);
+        log.info("상품 단건 조회 시작 (DB 조회) - productId: {}", productId);
         Product product = loadProductPort.loadProduct(productId);
-        log.info("✅ 상품 단건 조회 성공 (DB에서 로드됨) - productId: {}, 상품명: {}", 
+        log.info("상품 단건 조회 성공 (DB에서 로드됨) - productId: {}, 상품명: {}",
                 productId, product.getProductName());
         return product;
     }
