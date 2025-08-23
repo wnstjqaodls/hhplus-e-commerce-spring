@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp add:*)",
+      "Bash(claude mcp)",
+      "Bash(claude mcp:*)",
+      "Bash(npm install:*)",
+      "Bash(npm search:*)",
+      "Bash(mkdir:*)",
+      "Bash(./gradlew test:*)",
+      "mcp__puppeteer__puppeteer_screenshot",
+      "mcp__puppeteer__puppeteer_evaluate",
+      "Bash(claude config set --global preferredNotifChannel terminal_bell)",
+      "mcp__puppeteer__puppeteer_navigate",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "D:\\"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); printf \"[%s] %s@%s:%s\" \"$(echo \"$input\" | jq -r '.model.display_name')\" \"$(whoami)\" \"$(hostname -s)\" \"$(echo \"$input\" | jq -r '.workspace.current_dir' | sed 's|.*/||')\""
+  }
+}
