@@ -576,7 +576,7 @@ public class ProductRankingIntegrationTest {
                 orderCounts[productIndex] += orderAmount;
                 zSetOps.incrementScore(rankingKey, products[productIndex], orderAmount);
                 
-                        products[productIndex], orderAmount, orderCounts[productIndex]);
+                        //products[productIndex], orderAmount, orderCounts[productIndex];)
             }
             
             // 매 3초마다 현재 랭킹 출력
