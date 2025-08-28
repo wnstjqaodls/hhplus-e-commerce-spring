@@ -18,6 +18,7 @@ public class PlaceOrderService implements PlaceOrderUseCase {
     private final LoadPointPort loadPointPort;
     private final SaveOrderPort saveOrderPort;
 
+
     public PlaceOrderService(LoadPointPort loadPointPort, SaveOrderPort saveOrderPort) {
         this.loadPointPort = loadPointPort;
         this.saveOrderPort = saveOrderPort;
@@ -50,8 +51,7 @@ public class PlaceOrderService implements PlaceOrderUseCase {
         // 4. 주문 저장 (Point.savePoint()와 동일 패턴)
         log.info("Order 애그리거트 저장 시작");
         Order savedOrder = saveOrderPort.saveOrder(order, userId);
-        log.info("Order 애그리거트 저장 완료. 저장된 Order ID: {}, 주문 금액: {}", 
-                savedOrder.getId(), savedOrder.getPrice());
+        log.info("Order 애그리거트 저장 완료. 저장된 Order ID: {}, 주문 금액: {}", savedOrder.getId(), savedOrder.getPrice());
 
         return savedOrder.getId();
     }
