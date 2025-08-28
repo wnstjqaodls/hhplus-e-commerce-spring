@@ -4,8 +4,10 @@ import ecommerce.order.application.port.in.PlaceOrderUseCase;
 import ecommerce.order.application.port.out.LoadPointPort;
 import ecommerce.order.application.port.out.SaveOrderPort;
 import ecommerce.order.domain.Order;
+import ecommerce.order.domain.event.OrderCompletedEvent;
 import ecommerce.point.domain.Point;
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +19,12 @@ public class PlaceOrderService implements PlaceOrderUseCase {
 
     private final LoadPointPort loadPointPort;
     private final SaveOrderPort saveOrderPort;
+    private final ApplicationEventPublisher eventPublisher;
 
-
-    public PlaceOrderService(LoadPointPort loadPointPort, SaveOrderPort saveOrderPort) {
+    public PlaceOrderService(LoadPointPort loadPointPort, SaveOrderPort saveOrderPort, ApplicationEventPublisher eventPublisher) {
         this.loadPointPort = loadPointPort;
         this.saveOrderPort = saveOrderPort;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -52,6 +55,18 @@ public class PlaceOrderService implements PlaceOrderUseCase {
         log.info("Order 애그리거트 저장 시작");
         Order savedOrder = saveOrderPort.saveOrder(order, userId);
         log.info("Order 애그리거트 저장 완료. 저장된 Order ID: {}, 주문 금액: {}", savedOrder.getId(), savedOrder.getPrice());
+
+        // 5. 주문 완료 이벤트 발행 - 트랜잭션 커밋 후 부가 로직 실행
+        log.info("주문 완료 이벤트 발행 시작 - orderId: {}", savedOrder.getId());
+        OrderCompletedEvent event = OrderCompletedEvent.of(
+            savedOrder.getId(), 
+            userId, 
+            productId, 
+            quantity, 
+            amount
+        );
+        eventPublisher.publishEvent(event);
+        log.info("주문 완료 이벤트 발행 완료 - orderId: {}", savedOrder.getId());
 
         return savedOrder.getId();
     }
