@@ -13,7 +13,10 @@
       "Bash(claude config set --global preferredNotifChannel terminal_bell)",
       "mcp__puppeteer__puppeteer_navigate",
       "Bash(git add:*)",
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "WebFetch(domain:docs.docker.com)",
+      "WebFetch(domain:kafka.apache.org)",
+      "WebFetch(domain:docs.confluent.io)"
     ],
     "deny": [],
     "ask": [],
