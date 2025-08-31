@@ -12,7 +12,8 @@
       "mcp__puppeteer__puppeteer_evaluate",
       "Bash(claude config set --global preferredNotifChannel terminal_bell)",
       "mcp__puppeteer__puppeteer_navigate",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(./gradlew:*)"
     ],
     "deny": [],
     "ask": [],
