@@ -3,6 +3,8 @@ package ecommerce.order.application.service;
 import ecommerce.order.application.port.in.OrderAndPayUseCase;
 import ecommerce.order.application.port.in.PlaceOrderUseCase;
 import ecommerce.order.application.port.in.PayOrderUseCase;
+import ecommerce.order.domain.event.OrderCompletedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,10 +13,13 @@ public class OrderAndPayService implements OrderAndPayUseCase {
 
     private final PlaceOrderUseCase placeOrderUseCase;
     private final PayOrderUseCase payOrderUseCase;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public OrderAndPayService(PlaceOrderUseCase placeOrderUseCase, PayOrderUseCase payOrderUseCase) {
+    public OrderAndPayService(PlaceOrderUseCase placeOrderUseCase, PayOrderUseCase payOrderUseCase, 
+                             ApplicationEventPublisher eventPublisher) {
         this.placeOrderUseCase = placeOrderUseCase;
         this.payOrderUseCase = payOrderUseCase;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -25,6 +30,10 @@ public class OrderAndPayService implements OrderAndPayUseCase {
         
         // 2. 결제 처리 (PayOrderService 호출)
         Long paymentId = payOrderUseCase.payOrder(userId, orderId);
+        
+        // 3. 주문 완료 이벤트 발행 (트랜잭션 커밋 후 카프카로 전송됨)
+        OrderCompletedEvent event = OrderCompletedEvent.create(orderId, userId, productId, quantity, amount);
+        eventPublisher.publishEvent(event);
         
         return paymentId;
     }
