@@ -36,6 +36,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
+	// Kafka
+	implementation("org.springframework.kafka:spring-kafka")
+
 	// Redis & Redisson
 	implementation("org.redisson:redisson-spring-boot-starter:3.24.3") // 이 줄 추가
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
@@ -68,6 +71,7 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("com.redis.testcontainers:testcontainers-redis:1.6.4")
+	testImplementation("org.springframework.kafka:spring-kafka-test")
 
 	
 	// 테스트에서도 Lombok 사용
