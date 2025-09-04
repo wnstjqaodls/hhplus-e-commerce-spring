@@ -37,6 +37,18 @@ spring:
     redis:
       port: ${REDIS_PORT:6379}
       host: ${REDIS_HOST:localhost}
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: hhplus-consumer-group
+      # 해당 컨슈머 그룹의 오프셋 정보가 없을경우 맨 앞(offstet 0)부터 읽도록 설정
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      # 카프카는 데이터를 바이트 배열로 전송해야 하므로 직렬화가 필요.
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
   jpa:
     hibernate:
       ddl-auto: update
