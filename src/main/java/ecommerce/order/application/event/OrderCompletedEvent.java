@@ -1,4 +1,4 @@
-package ecommerce.order.domain.event;
+package ecommerce.order.application.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

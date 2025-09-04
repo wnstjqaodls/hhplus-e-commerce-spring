@@ -3,7 +3,7 @@ package ecommerce.order.application.service;
 import ecommerce.order.application.port.in.OrderAndPayUseCase;
 import ecommerce.order.application.port.in.PlaceOrderUseCase;
 import ecommerce.order.application.port.in.PayOrderUseCase;
-import ecommerce.order.domain.event.OrderCompletedEvent;
+import ecommerce.order.application.event.OrderCompletedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
