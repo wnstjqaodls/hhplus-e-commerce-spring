@@ -23,15 +23,18 @@ public class CouponIssueConsumer {
     }
 
     @KafkaListener(topics = "coupon-issue-request")
-    public void consumeCouponIssueRequest(MessageDto messageDto) throws Exception {
+    public void consumeCouponIssueRequest(MessageDto messageDto) {
         log.info("쿠폰 발급 요청 메시지 수신. requestId: {}", messageDto.getId());
-        
-        // JSON 문자열을 CouponIssueEvent 객체로 변환
-        CouponIssueEvent event = objectMapper.readValue(messageDto.getContent(), CouponIssueEvent.class);
-        
-        // 쿠폰 발급 처리
-        Long userCouponId = issueCouponUseCase.issueCoupon(event.userId(), event.couponId());
-        
-        log.info("쿠폰 발급 완료. userCouponId: {}, requestId: {}", userCouponId, event.requestId());
+        try {
+            // JSON 문자열을 CouponIssueEvent 객체로 변환
+            CouponIssueEvent event = objectMapper.readValue(messageDto.getContent(), CouponIssueEvent.class);
+
+            // 쿠폰 발급 처리
+            Long userCouponId = issueCouponUseCase.issueCoupon(event.userId(), event.couponId());
+
+            log.info("쿠폰 발급 완료. userCouponId: {}, requestId: {}", userCouponId, event.requestId());
+        } catch (Exception e) {
+            log.error("쿠폰 발급 요청 처리 실패. requestId: {}, error: {}", messageDto.getId(), e.getMessage());
+        }
     }
 }

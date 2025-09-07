@@ -12,7 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,14 +70,17 @@ class CouponIssueConsumerTest {
         MessageDto invalidMessageDto = new MessageDto();
         invalidMessageDto.setId("invalid-req");
         invalidMessageDto.setContent(invalidJson);
-        
+
         when(objectMapper.readValue(invalidJson, CouponIssueEvent.class))
-                .thenThrow(new RuntimeException("JSON 파싱 실패"));
+                .thenThrow(new com.fasterxml.jackson.core.JsonProcessingException("JSON 파싱 실패") {});
 
         // When & Then
-        // 현재 구현에서는 예외가 발생할 것임 (이것이 실패하는 테스트)
-        assertThrows(RuntimeException.class, () -> 
+        // 예외가 발생하지 않아야 함
+        assertDoesNotThrow(() -> 
             couponIssueConsumer.consumeCouponIssueRequest(invalidMessageDto)
         );
+
+        // 추가적으로 issueCouponUseCase.issueCoupon이 호출되지 않았는지 확인할 수 있습니다.
+        verify(issueCouponUseCase, never()).issueCoupon(anyLong(), anyLong());
     }
 }
