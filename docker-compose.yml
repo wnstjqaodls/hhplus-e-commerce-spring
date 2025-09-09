@@ -63,6 +63,59 @@ services:
       - kafka
       - zookeeper
 
+  k6:
+    image: grafana/k6:0.54.0
+    container_name: k6
+    volumes:
+      - ./k6:/scripts:ro
+      - ./data/k6-results:/results
+    networks:
+      - default
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+    profiles:
+      - testing
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./data/prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - default
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - default
+    depends_on:
+      - prometheus
+    profiles:
+      - monitoring
+
 networks:
   default:
     driver: bridge  
