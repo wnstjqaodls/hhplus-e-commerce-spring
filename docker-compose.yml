@@ -75,8 +75,7 @@ services:
       - mysql
       - redis
       - kafka
-    profiles:
-      - testing
+    entrypoint: ["tail", "-f", "/dev/null"]
 
   prometheus:
     image: prom/prometheus:v2.48.0
@@ -85,30 +84,16 @@ services:
       - "9090:9090"
     volumes:
       - ./data/prometheus:/prometheus
-    command: |
-      sh -c "
-      cat > /tmp/prometheus.yml << 'EOF'
-      global:
-        scrape_interval: 15s
-        evaluation_interval: 15s
-
-      scrape_configs:
-        - job_name: 'prometheus'
-          static_configs:
-            - targets: ['localhost:9090']
-
-        - job_name: 'spring-boot-app'
-          static_configs:
-            - targets: ['host.docker.internal:8080']
-          metrics_path: '/actuator/prometheus'
-          scrape_interval: 5s
-      EOF
-      /bin/prometheus --config.file=/tmp/prometheus.yml --storage.tsdb.path=/prometheus --web.console.libraries=/etc/prometheus/console_libraries --web.console.templates=/etc/prometheus/consoles --storage.tsdb.retention.time=200h --web.enable-lifecycle
-      "
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
     networks:
       - default
-    profiles:
-      - monitoring
 
   grafana:
     image: grafana/grafana:10.2.2
@@ -120,27 +105,11 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - ./data/grafana:/var/lib/grafana
-    command: |
-      sh -c "
-      mkdir -p /etc/grafana/provisioning/datasources
-      cat > /etc/grafana/provisioning/datasources/prometheus.yml << 'EOF'
-      apiVersion: 1
-
-      datasources:
-        - name: Prometheus
-          type: prometheus
-          access: proxy
-          url: http://prometheus:9090
-          isDefault: true
-      EOF
-      /run.sh
-      "
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
     networks:
       - default
     depends_on:
       - prometheus
-    profiles:
-      - monitoring
 
 networks:
   default:

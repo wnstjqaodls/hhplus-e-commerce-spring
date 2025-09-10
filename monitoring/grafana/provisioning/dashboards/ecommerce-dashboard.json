@@ -1,0 +1,111 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "E-commerce Application Metrics",
+    "tags": ["ecommerce", "spring-boot", "k6"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "HTTP Request Rate",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(http_server_requests_seconds_count[1m])",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "HTTP Request Duration",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_server_requests_seconds_bucket[1m]))",
+            "refId": "A",
+            "legendFormat": "95th percentile"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(http_server_requests_seconds_bucket[1m]))",
+            "refId": "B",
+            "legendFormat": "50th percentile"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "JVM Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+            "refId": "A",
+            "legendFormat": "Heap Used"
+          },
+          {
+            "expr": "jvm_memory_max_bytes{area=\"heap\"}",
+            "refId": "B",
+            "legendFormat": "Heap Max"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "HTTP Status Codes",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "increase(http_server_requests_seconds_count[5m])",
+            "refId": "A",
+            "legendFormat": "{{status}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        }
+      }
+    ],
+    "time": {
+      "from": "now-15m",
+      "to": "now"
+    },
+    "refresh": "5s"
+  }
+}
