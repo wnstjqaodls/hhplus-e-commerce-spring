@@ -35,6 +35,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+	
+	// Prometheus metrics
+	implementation("io.micrometer:micrometer-registry-prometheus")
 
 	// Kafka
 	implementation("org.springframework.kafka:spring-kafka")
