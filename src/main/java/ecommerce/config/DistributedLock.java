@@ -20,11 +20,11 @@ public @interface DistributedLock {
     //락의 시간 단위
     TimeUnit timeUnit() default TimeUnit.SECONDS;
 
-    //락을 기다리는 시간 (기본값은 - 5초)
-    //락 획득을 위해 watTime 만큼 대기한다. // long 타입일 필요가있나? waitTime 이??
-    long waitTime() default 5L;
+    //락을 기다리는 시간 (기본값은 - 1초로 단축)
+    //락 획득을 위해 watTime 만큼 대기한다
+    long waitTime() default 1L;
 
-    //락 임대시간 (기본값은 - 3초)
-    long leaseTime() default 3L;
+    //락 임대시간 (기본값은 - 2초로 단축)
+    long leaseTime() default 2L;
 
 }
