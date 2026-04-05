@@ -20,7 +20,7 @@ public class PointPersistenceAdapter implements LoadPointPort, SavePointPort {
     @Override
     @Transactional(readOnly = true)
     public Point loadPoint(Long userId) {
-        PointJpaEntity pointJpaEntity = pointRepository.findByUserId(userId).orElse(null);
+        PointJpaEntity pointJpaEntity = pointRepository.findFirstByUserId(userId).orElse(null);
 
         if (pointJpaEntity == null) {
             return null;
@@ -35,8 +35,12 @@ public class PointPersistenceAdapter implements LoadPointPort, SavePointPort {
         PointJpaEntity pointJpaEntity;
 
         if (point.getId() == null) {
-            pointJpaEntity = new PointJpaEntity();
-            pointJpaEntity.setUserId(userId);
+            // 이미 해당 userId의 포인트 레코드가 있으면 UPSERT
+            pointJpaEntity = pointRepository.findFirstByUserId(userId).orElseGet(() -> {
+                PointJpaEntity entity = new PointJpaEntity();
+                entity.setUserId(userId);
+                return entity;
+            });
             pointJpaEntity.setLastChargedAt(LocalDateTime.now());
         } else {
             pointJpaEntity = pointRepository.findById(point.getId())
